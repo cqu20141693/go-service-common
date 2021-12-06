@@ -24,10 +24,10 @@ func ReadLocalConfig() {
 	viper.AddConfigPath("/etc/resource")
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			logger.Info(context.Background(),"Config file not found; ignore error if desired")
+			logger.Info(context.Background(), "Config file not found; ignore error if desired")
 
 		} else {
-			logger.Info(context.Background(),"Config file was found but another error was produced")
+			logger.Info(context.Background(), "Config file was found but another error was produced")
 		}
 		log.Fatal(err)
 	}
@@ -49,4 +49,12 @@ func GetStringOrDefault(key, defaultVal string) string {
 		return defaultVal
 	}
 	return str
+}
+
+func Sub(key string) *viper.Viper { return viper.Sub(key) }
+
+func GetString(key string) string { return viper.GetString(key) }
+
+func GetStringMap(key string) map[string]interface{} {
+	return viper.GetStringMap(key)
 }
