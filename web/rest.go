@@ -2,6 +2,10 @@ package web
 
 import "github.com/gin-gonic/gin"
 
+type CCApi interface {
+	InitRouterMapper(engine *gin.Engine)
+}
+
 type BaseRestController struct {
 }
 
