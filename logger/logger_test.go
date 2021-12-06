@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	zapctx "github.com/cqu20141693/go-service-common/logger"
+	"github.com/cqu20141693/go-service-common/logger/cclog"
 	qt "github.com/frankban/quicktest"
 	"github.com/juju/loggo"
 	"github.com/nacos-group/nacos-sdk-go/common/file"
@@ -19,7 +20,7 @@ import (
 func TestLogger(t *testing.T) {
 	c := qt.New(t)
 	var buf bytes.Buffer
-	logger := newLogger(&buf)
+	logger := cclog.NewLogger(&buf)
 	ctx := zapctx.WithLogger(context.Background(), logger)
 	zapctx.Logger(ctx).Info("hello")
 	c.Assert(buf.String(), qt.Matches, `INFO\thello\n`)
@@ -28,7 +29,7 @@ func TestLogger(t *testing.T) {
 func TestDefaultLogger(t *testing.T) {
 	c := qt.New(t)
 	var buf bytes.Buffer
-	logger := newLogger(&buf)
+	logger := cclog.NewLogger(&buf)
 	ctx := zapctx.WithLogger(context.Background(), logger)
 	zapctx.Logger(ctx).Info("hello")
 	c.Assert(buf.String(), qt.Matches, `INFO\thello\n`)
@@ -37,7 +38,7 @@ func TestDefaultLogger(t *testing.T) {
 func TestWithFields(t *testing.T) {
 	c := qt.New(t)
 	var buf bytes.Buffer
-	logger := newLogger(&buf)
+	logger := cclog.NewLogger(&buf)
 
 	ctx := zapctx.WithLogger(context.Background(), logger)
 	ctx = zapctx.WithFields(ctx, zap.Int("foo", 999), zap.String("bar", "whee"))
@@ -48,7 +49,7 @@ func TestWithFields(t *testing.T) {
 func TestWithLevel(t *testing.T) {
 	c := qt.New(t)
 	var buf bytes.Buffer
-	logger := newLogger(&buf)
+	logger := cclog.NewLogger(&buf)
 
 	ctx := zapctx.WithLogger(context.Background(), logger)
 	ctx1 := zapctx.WithLevel(ctx, zap.WarnLevel)
@@ -62,7 +63,7 @@ func TestWithLevel(t *testing.T) {
 func TestMultistageSetupA(t *testing.T) {
 	c := qt.New(t)
 	var buf bytes.Buffer
-	logger := newLogger(&buf)
+	logger := cclog.NewLogger(&buf)
 
 	ctx := zapctx.WithLogger(context.Background(), logger)
 	ctx = zapctx.WithLevel(ctx, zapcore.WarnLevel)
@@ -75,7 +76,7 @@ func TestMultistageSetupA(t *testing.T) {
 func TestMultistageSetupB(t *testing.T) {
 	c := qt.New(t)
 	var buf bytes.Buffer
-	logger := newLogger(&buf)
+	logger := cclog.NewLogger(&buf)
 
 	ctx := zapctx.WithLogger(context.Background(), logger)
 	ctx = zapctx.WithFields(ctx, zap.String("foo", "bar"))
@@ -98,7 +99,7 @@ func TestZapUtil(t *testing.T) {
 	service := "sip-service"
 	rotateTime := "24h"
 	maxAge := 3
-	writer, err := zapctx.GetWriter(file.GetCurrentPath(), service+".log", rotateTime, int64(maxAge))
+	writer, err := cclog.GetWriter(file.GetCurrentPath(), service+".log", rotateTime, int64(maxAge))
 	if err != nil {
 		logger.Info("get log writer failed")
 		return
@@ -108,33 +109,19 @@ func TestZapUtil(t *testing.T) {
 
 func testWriterRotate(w io.Writer, entry loggo.Entry) {
 	entry.Timestamp = time.Now()
-	logger := newLogger(w)
-	writer := zapctx.NewLoggoWriter(logger)
+	logger := cclog.NewLogger(w)
+	writer := cclog.NewLoggoWriter(logger)
 	writer.Write(entry)
 }
 
 func testWriterBuffer(w io.Writer, entry loggo.Entry) {
-	logger := newLogger(w)
-	writer := zapctx.NewLoggoWriter(logger)
+	logger := cclog.NewLogger(w)
+	writer := cclog.NewLoggoWriter(logger)
 	writer.Write(entry)
 }
 func testWriterConsole(w io.Writer, entry loggo.Entry) {
 	entry.Timestamp = time.Now()
-	logger := newLogger(w)
-	writer := zapctx.NewLoggoWriter(logger)
+	logger := cclog.NewLogger(w)
+	writer := cclog.NewLoggoWriter(logger)
 	writer.Write(entry)
-}
-
-func newLogger(w io.Writer) *zap.Logger {
-	config := zapcore.EncoderConfig{
-		MessageKey:  "msg",
-		LevelKey:    "level",
-		EncodeLevel: zapcore.CapitalLevelEncoder,
-	}
-	core := zapcore.NewCore(
-		zapcore.NewConsoleEncoder(config),
-		zapcore.AddSync(w),
-		zapcore.InfoLevel,
-	)
-	return zap.New(core)
 }

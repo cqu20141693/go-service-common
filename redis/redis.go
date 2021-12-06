@@ -1,4 +1,4 @@
-package gb28181
+package redis
 
 import (
 	"github.com/cqu20141693/go-service-common/config"

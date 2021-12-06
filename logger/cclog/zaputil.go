@@ -1,4 +1,4 @@
-package logger
+package cclog
 
 import (
 	"github.com/juju/loggo"
@@ -55,4 +55,26 @@ func GetWriter(outputPath, name, rotateTime string, maxAge int64) (writer io.Wri
 		rotatelogs.WithRotationTime(rotateDuration), rotatelogs.WithMaxAge(time.Duration(maxAge)*rotateDuration),
 		rotatelogs.WithLinkName(filepath.Join(outputPath, name)))
 	return
+}
+
+var defaultLevel = zapcore.InfoLevel
+
+func SetLevel(level zapcore.Level) {
+	defaultLevel = level
+}
+
+func NewLogger(w io.Writer) *zap.Logger {
+	config := zapcore.EncoderConfig{
+		MessageKey:  "msg",
+		LevelKey:    "level",
+		TimeKey:     "ts",
+		EncodeLevel: zapcore.CapitalLevelEncoder,
+	}
+	level := zapcore.InfoLevel
+	core := zapcore.NewCore(
+		zapcore.NewConsoleEncoder(config),
+		zapcore.AddSync(w),
+		level,
+	)
+	return zap.New(core)
 }

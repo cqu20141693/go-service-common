@@ -1,6 +1,5 @@
 package logger
 
-
 import (
 	"context"
 	"os"
@@ -30,6 +29,10 @@ var Default = zap.New(
 		&LogLevel,
 	),
 )
+
+func SetLogLevel(level zap.AtomicLevel) {
+	LogLevel = level
+}
 
 // loggerKey holds the context key used for loggers.
 type loggerKey struct{}

@@ -51,6 +51,10 @@ func GetStringOrDefault(key, defaultVal string) string {
 	return str
 }
 
+func Default(key string, value interface{}) {
+	viper.SetDefault(key, value)
+}
+
 func Sub(key string) *viper.Viper { return viper.Sub(key) }
 
 func GetString(key string) string { return viper.GetString(key) }
@@ -58,3 +62,4 @@ func GetString(key string) string { return viper.GetString(key) }
 func GetStringMap(key string) map[string]interface{} {
 	return viper.GetStringMap(key)
 }
+func GetInt64(key string) int64 { return viper.GetInt64(key) }
