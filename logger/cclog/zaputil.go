@@ -70,11 +70,10 @@ func NewLogger(w io.Writer) *zap.Logger {
 		TimeKey:     "ts",
 		EncodeLevel: zapcore.CapitalLevelEncoder,
 	}
-	level := zapcore.InfoLevel
 	core := zapcore.NewCore(
 		zapcore.NewConsoleEncoder(config),
 		zapcore.AddSync(w),
-		level,
+		defaultLevel,
 	)
 	return zap.New(core)
 }

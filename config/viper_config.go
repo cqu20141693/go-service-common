@@ -3,18 +3,21 @@ package config
 import (
 	"context"
 	"errors"
-	ccMicro "github.com/cqu20141693/go-service-common/event"
+	"github.com/cqu20141693/go-service-common/event"
 	"github.com/cqu20141693/go-service-common/logger"
 	"github.com/spf13/viper"
 	"log"
 )
 
 func init() {
+	event.RegisterHook(event.Start, InitConfig)
+}
+func InitConfig() {
 	ReadLocalConfig()
 	if viper.GetStringMap("cc.cloud.nacos.config") != nil {
 		NacosInit()
 	}
-	ccMicro.TriggerEvent(ccMicro.ConfigComplete)
+	event.TriggerEvent(event.ConfigComplete)
 }
 func ReadLocalConfig() {
 	// 读取本地配置
@@ -31,7 +34,7 @@ func ReadLocalConfig() {
 		}
 		log.Fatal(err)
 	}
-	ccMicro.TriggerEvent(ccMicro.LocalConfigComplete)
+	event.TriggerEvent(event.LocalConfigComplete)
 }
 
 func GetAppConfigName(name, active string) (string, error) {

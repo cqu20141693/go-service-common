@@ -14,14 +14,14 @@ var logs []loggo.Writer
 var console loggo.Writer
 
 func init() {
-
-	stdout := NewLogger(os.Stdout)
-	console = NewLoggoWriter(stdout)
-	logs = []loggo.Writer{console}
 	event.RegisterHook(event.ConfigComplete, configRotate)
 }
 
 func configRotate() {
+
+	stdout := NewLogger(os.Stdout)
+	console = NewLoggoWriter(stdout)
+	logs = []loggo.Writer{console}
 	addDefaultConfig()
 	rotateTime := config.GetStringOrDefault("cc.log.rotate-time", "24h")
 	maxAge := config.GetInt64("cc.log.max-age")

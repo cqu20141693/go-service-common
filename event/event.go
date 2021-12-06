@@ -9,14 +9,16 @@ import (
 type MicroEvent int8
 
 const (
-	Start MicroEvent = iota
+	Init MicroEvent = iota
+	Start
 	LocalConfigComplete
 	ConfigComplete
+	RouterRegisterComplete
 )
 
 type ConfigHook func()
 
-var concurrent = Start
+var concurrent = Init
 var HookMap = make(map[MicroEvent][]ConfigHook)
 
 func RegisterHook(e MicroEvent, hook ConfigHook) {
@@ -39,7 +41,7 @@ func TriggerEvent(event MicroEvent) {
 		}
 		concurrent = event
 	} else {
-		logger.Info(context.Background(),"current event must be less event")
+		logger.Info(context.Background(), "current event must be less event")
 	}
 
 }

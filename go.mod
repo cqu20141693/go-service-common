@@ -3,6 +3,8 @@ module github.com/cqu20141693/go-service-common
 go 1.17
 
 require (
+	github.com/asim/go-micro/plugins/client/http/v4 v4.0.0-20211124174154-b25d744f5c51
+	github.com/asim/go-micro/plugins/server/http/v4 v4.0.0-20211124174154-b25d744f5c51
 	github.com/frankban/quicktest v1.14.0
 	github.com/gin-gonic/gin v1.7.7
 	github.com/go-redis/redis/v8 v8.11.4
@@ -15,6 +17,8 @@ require (
 	gorm.io/driver/mysql v1.2.1
 	gorm.io/gorm v1.22.4
 	gorm.io/plugin/dbresolver v1.1.0
+    go-micro.dev/v4 v4.4.0
+
 )
 
 require (
