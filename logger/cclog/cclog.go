@@ -1,6 +1,7 @@
 package cclog
 
 import (
+	"context"
 	"github.com/cqu20141693/go-service-common/config"
 	"github.com/cqu20141693/go-service-common/event"
 	"github.com/cqu20141693/go-service-common/file"
@@ -14,10 +15,10 @@ var logs []loggo.Writer
 var console loggo.Writer
 
 func init() {
-	event.RegisterHook(event.ConfigComplete, configRotate)
+	event.RegisterHook(event.ConfigComplete, event.NewHookContext(configRotate, context.Background()))
 }
 
-func configRotate() {
+func configRotate(ctx context.Context) {
 
 	stdout := NewLogger(os.Stdout)
 	console = NewLoggoWriter(stdout)

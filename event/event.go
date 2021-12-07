@@ -16,31 +16,45 @@ const (
 	RouterRegisterComplete
 )
 
-type ConfigHook func()
+type ConfigHook func(ctx context.Context)
 
 var concurrent = Init
-var HookMap = make(map[MicroEvent][]ConfigHook)
 
-func RegisterHook(e MicroEvent, hook ConfigHook) {
+type HookContext struct {
+	hook ConfigHook
+	Ctx  context.Context
+}
+
+func NewHookContext(hook ConfigHook, ctx context.Context) *HookContext {
+	return &HookContext{hook: hook, Ctx: ctx}
+}
+
+var HookMap = make(map[MicroEvent][]*HookContext)
+
+func RegisterHook(e MicroEvent, hookCtx *HookContext) {
 	if concurrent >= e {
-		hook()
+		hookCtx.hook(hookCtx.Ctx)
 	} else {
 		hooks, ok := HookMap[e]
 		if !ok {
-			hooks = make([]ConfigHook, 0)
+			hooks = make([]*HookContext, 0)
 		}
-		hooks = append(hooks, hook)
+		hooks = append(hooks, hookCtx)
 		HookMap[e] = hooks
 	}
 }
 
 func TriggerEvent(event MicroEvent) {
 	if concurrent < event {
-		for _, hook := range HookMap[event] {
-			hook()
+		for _, hookCtx := range HookMap[event] {
+			hookCtx.hook(hookCtx.Ctx)
 		}
 		concurrent = event
 	} else {
+		for _, hookCtx := range HookMap[event-1] {
+			hookCtx.hook(hookCtx.Ctx)
+		}
+		concurrent = event
 		logger.Info(context.Background(), "current event must be less event")
 	}
 

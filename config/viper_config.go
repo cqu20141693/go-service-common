@@ -6,13 +6,12 @@ import (
 	"github.com/cqu20141693/go-service-common/event"
 	"github.com/cqu20141693/go-service-common/logger"
 	"github.com/spf13/viper"
-	"log"
 )
 
 func init() {
-	event.RegisterHook(event.Start, InitConfig)
+	event.RegisterHook(event.Start, event.NewHookContext(InitConfig, context.Background()))
 }
-func InitConfig() {
+func InitConfig(ctx context.Context) {
 	ReadLocalConfig()
 	if viper.GetStringMap("cc.cloud.nacos.config") != nil {
 		NacosInit()
@@ -27,12 +26,10 @@ func ReadLocalConfig() {
 	viper.AddConfigPath("/etc/resource")
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			logger.Info(context.Background(), "Config file not found; ignore error if desired")
-
+			logger.Debug(context.Background(), "Config file not found; ignore error if desired")
 		} else {
 			logger.Info(context.Background(), "Config file was found but another error was produced")
 		}
-		log.Fatal(err)
 	}
 	event.TriggerEvent(event.LocalConfigComplete)
 }

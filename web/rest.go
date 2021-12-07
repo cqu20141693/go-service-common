@@ -1,10 +1,15 @@
 package web
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
+)
 
 type CCApi interface {
 	InitRouterMapper(engine *gin.Engine)
 }
+
+var Validate = validator.New()
 
 type BaseRestController struct {
 }

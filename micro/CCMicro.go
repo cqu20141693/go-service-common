@@ -3,15 +3,14 @@ package ccmicro
 import (
 	"context"
 	"github.com/cqu20141693/go-service-common/logger/cclog"
-	"github.com/cqu20141693/go-service-common/plugins/registry/nacos"
 	"github.com/cqu20141693/go-service-common/web"
-	"github.com/go-playground/validator/v10"
 	"go-micro.dev/v4/client"
 	"go-micro.dev/v4/logger"
 	"go-micro.dev/v4/selector"
+	"os"
 
 	httpClient "github.com/asim/go-micro/plugins/client/http/v4"
-	//"github.com/asim/go-micro/plugins/registry/nacos/v3"
+	"github.com/asim/go-micro/plugins/registry/nacos/v4"
 	httpServer "github.com/asim/go-micro/plugins/server/http/v4"
 	"github.com/cqu20141693/go-service-common/config"
 	"github.com/gin-gonic/gin"
@@ -30,11 +29,10 @@ type NacosNamespaceContextKey struct {
 
 var PanicFunc = func() {
 	if err := recover(); err != nil {
-		logger.Info(err)
-		logger.Info("occur panic")
+		logger.Error(err)
+		cclog.Info("occur panic")
 	}
 }
-var Validate = validator.New()
 
 func CreateRegister() registry.Registry {
 	return nacos.NewRegistry(func(options *registry.Options) {
@@ -82,7 +80,11 @@ func Micro(args []string) {
 	service := CreateServiceWithHttpServer()
 	service.Init()
 	configRouter(service.Server())
-
+	// Run service
+	if err := service.Run(); err != nil {
+		cclog.Error(err.Error())
+		os.Exit(0)
+	}
 }
 func configRouter(server server.Server) {
 
