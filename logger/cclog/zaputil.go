@@ -1,7 +1,6 @@
 package cclog
 
 import (
-	"github.com/juju/loggo"
 	rotatelogs "github.com/lestrrat/go-file-rotatelogs"
 	"github.com/nacos-group/nacos-sdk-go/common/file"
 	"go.uber.org/zap"
@@ -12,33 +11,51 @@ import (
 	"time"
 )
 
-var loggoToZap = map[loggo.Level]zapcore.Level{
-	loggo.TRACE:    zap.DebugLevel, // There's no zap equivalent to TRACE.
-	loggo.DEBUG:    zap.DebugLevel,
-	loggo.INFO:     zap.InfoLevel,
-	loggo.WARNING:  zap.WarnLevel,
-	loggo.ERROR:    zap.ErrorLevel,
-	loggo.CRITICAL: zap.ErrorLevel, // There's no zap equivalent to CRITICAL.
+// Entry represents a single log message.
+type Entry struct {
+	// Level is the severity of the log message.
+	Level Level
+	// Module is the dotted module name from the logger.
+	Module string
+	// Filename is the full path the file that logged the message.
+	Filename string
+	// Line is the line number of the Filename.
+	Line int
+	// Timestamp is when the log message was created
+	Timestamp time.Time
+	// Message is the formatted string from teh log call.
+	Message string
+	// Labels is the label associated with the log message.
+	Labels []string
 }
 
-// NewLoggoWriter returns a loggo.Writer that writes to the
+var loggoToZap = map[Level]zapcore.Level{
+	TRACE:    zap.DebugLevel, // There's no zap equivalent to TRACE.
+	DEBUG:    zap.DebugLevel,
+	INFO:     zap.InfoLevel,
+	WARNING:  zap.WarnLevel,
+	ERROR:    zap.ErrorLevel,
+	CRITICAL: zap.ErrorLevel, // There's no zap equivalent to CRITICAL.
+}
+
+// NewCCLogWriter returns a Writer that writes to the
 // given zap logger.
-func NewLoggoWriter(logger *zap.Logger) loggo.Writer {
-	return zapLoggoWriter{
+func NewCCLogWriter(logger *zap.Logger) Writer {
+	return zapCCLogWriter{
 		logger: logger,
 	}
 }
 
-// zapLoggoWriter implements a loggo.Writer by writing to a zap.Logger,
+// zapLoggoWriter implements a Writer by writing to a zap.Logger,
 // so can be used as an adaptor from loggo to zap.
-type zapLoggoWriter struct {
+type zapCCLogWriter struct {
 	logger *zap.Logger
 }
 
-// zapLoggoWriter implements loggo.Writer.Write by writing the entry
+// zapCCLogWriter implements Writer.Write by writing the entry
 // to w.logger. It ignores entry.Timestamp because zap will affix its
 // own timestamp.
-func (w zapLoggoWriter) Write(entry loggo.Entry) {
+func (w zapCCLogWriter) Write(entry Entry) {
 	if ce := w.logger.Check(loggoToZap[entry.Level], entry.Message); ce != nil {
 		ce.Write(zap.String("module", entry.Module), zap.String("timestamp", entry.Timestamp.Format("2006-01-02 15:04:05.000")))
 	}

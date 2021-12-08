@@ -1,7 +1,6 @@
 package mysql
 
 import (
-	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -64,9 +63,9 @@ func (r *DataSource) Dsn() (dsn string) {
 	return fmt.Sprintf("%s:%s@%s", r.Username, r.Password, r.Url)
 }
 func init() {
-	event.RegisterHook(event.ConfigComplete, event.NewHookContext(initDB, context.Background()))
+	event.RegisterHook(event.LogComplete, event.NewHookContext(initDB, "initMysql"))
 }
-func initDB(ctx context.Context) {
+func initDB() {
 
 	defer func() {
 		if err := recover(); err != nil {

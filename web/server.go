@@ -1,17 +1,18 @@
 package web
 
 import (
-	"context"
+	"fmt"
 	"github.com/cqu20141693/go-service-common/config"
 	"github.com/cqu20141693/go-service-common/event"
 	"github.com/cqu20141693/go-service-common/logger/cclog"
 	"github.com/gin-gonic/gin"
+	"go-micro.dev/v4/util/log"
 	"os"
 )
 
 func init() {
 
-	event.RegisterHook(event.ConfigComplete, event.NewHookContext(InitRouter, context.Background()))
+	event.RegisterHook(event.LogComplete, event.NewHookContext(InitRouter, "initRouter"))
 }
 
 var Engine = gin.New()
@@ -24,21 +25,24 @@ func AddRouterRegister(register RouterRegister) {
 	if register != nil {
 		routerRegisterSlice = append(routerRegisterSlice, register)
 	}
+	cclog.Debug(fmt.Sprintf("AddRouterRegister size=%d", len(routerRegisterSlice)))
 }
 
-func InitRouter(ctx context.Context) {
+func InitRouter() {
 	for _, register := range routerRegisterSlice {
 		register(Engine)
 	}
+	cclog.Debug(fmt.Sprintf("trigger RouterRegisterComplete size=%d", len(routerRegisterSlice)))
 	event.TriggerEvent(event.RouterRegisterComplete)
 }
 
-func Start(ctx context.Context) {
+func Start() {
+	cclog.Debug("web start")
 	go func() {
 		address := config.GetStringOrDefault("server.port", "8080")
 		err := Engine.Run(":" + address)
 		if err != nil {
-			cclog.Error("api server start failed")
+			log.Error(err)
 			os.Exit(0)
 			return
 		}

@@ -1,7 +1,6 @@
 package redis
 
 import (
-	"context"
 	"github.com/cqu20141693/go-service-common/config"
 	"log"
 	"time"
@@ -14,10 +13,10 @@ var RedisDB *redis.Client
 var ClusterDB *redis.ClusterClient
 
 func init() {
-	event.RegisterHook(event.ConfigComplete, event.NewHookContext(initRedisDB, context.Background()))
+	event.RegisterHook(event.LogComplete, event.NewHookContext(initRedisDB, "initRedis"))
 }
 
-func initRedisDB(ctx context.Context) {
+func initRedisDB() {
 
 	sub := config.Sub("cc.redis")
 	addr := config.GetString("addr")

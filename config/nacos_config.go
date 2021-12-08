@@ -1,9 +1,8 @@
 package config
 
 import (
-	"context"
 	"encoding/json"
-	"github.com/cqu20141693/go-service-common/logger"
+	"github.com/cqu20141693/go-service-common/logger/cclog"
 	"github.com/nacos-group/nacos-sdk-go/clients"
 	"github.com/nacos-group/nacos-sdk-go/clients/config_client"
 	"github.com/nacos-group/nacos-sdk-go/common/constant"
@@ -92,11 +91,11 @@ func ReadNacosConfig() {
 	}
 	content, err := GetConfigByDataId(appConfigName)
 	if err != nil {
-		logger.Info(context.Background(),"getConfig error dataId=" + appConfigName)
+		cclog.Info("getConfig error dataId=" + appConfigName)
 	}
 	err = viper.MergeConfig(strings.NewReader(content))
 	if err != nil {
-		logger.Error(context.Background(),"Viper Failed to resolve configuration content=" + content)
+		cclog.Error("Viper Failed to resolve configuration content=" + content)
 	}
 }
 

@@ -1,8 +1,7 @@
 package container
 
 import (
-	"context"
-	"github.com/cqu20141693/go-service-common/logger"
+	"github.com/cqu20141693/go-service-common/logger/cclog"
 	"syscall"
 )
 
@@ -14,7 +13,7 @@ func init() {
 }
 func InjectSingleton(key string, o interface{}) {
 	if _, ok := SingletonFactory[key]; ok {
-		logger.Info(context.Background(), "The singleton factory already exists instance="+key)
+		cclog.Info("The singleton factory already exists instance=" + key)
 		syscall.Exit(1)
 	}
 	SingletonFactory[key] = o

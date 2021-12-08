@@ -1,22 +1,39 @@
 package config
 
 import (
-	"context"
 	"errors"
+	"fmt"
 	"github.com/cqu20141693/go-service-common/event"
-	"github.com/cqu20141693/go-service-common/logger"
+	"github.com/cqu20141693/go-service-common/logger/cclog"
+	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 )
 
-func init() {
-	event.RegisterHook(event.Start, event.NewHookContext(InitConfig, context.Background()))
+func Init() {
+	pflag.String("cc.profiles.active", "", "config env variable")
+	event.RegisterHook(event.Start, event.NewHookContext(readConfig, "initConfig"))
 }
-func InitConfig(ctx context.Context) {
+
+func readConfig() {
 	ReadLocalConfig()
-	if viper.GetStringMap("cc.cloud.nacos.config") != nil {
+	ReadCommandLine()
+	ReadLocalProfile()
+	nacosConfig := viper.GetStringMap("cc.cloud.nacos.config")
+	if nacosConfig != nil && len(nacosConfig) > 0 {
 		NacosInit()
 	}
 	event.TriggerEvent(event.ConfigComplete)
+}
+
+func ReadLocalProfile() {
+
+}
+
+func ReadCommandLine() {
+	pflag.Parse()
+	// 绑定命令行
+	viper.BindPFlags(pflag.CommandLine)
+	cclog.Info(fmt.Sprintf("profile active %s", GetString("cc.profiles.active")))
 }
 func ReadLocalConfig() {
 	// 读取本地配置
@@ -26,9 +43,9 @@ func ReadLocalConfig() {
 	viper.AddConfigPath("/etc/resource")
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			logger.Debug(context.Background(), "Config file not found; ignore error if desired")
+			cclog.Debug("Config file not found; ignore error if desired")
 		} else {
-			logger.Info(context.Background(), "Config file was found but another error was produced")
+			cclog.Info("Config file was found but another error was produced")
 		}
 	}
 	event.TriggerEvent(event.LocalConfigComplete)

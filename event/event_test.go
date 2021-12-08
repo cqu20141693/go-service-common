@@ -16,7 +16,7 @@ func TestEvent(t *testing.T) {
 	//test timeout
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*2)
 	defer cancel()
-	timeout := func(ctx context.Context) {
+	timeout := func() {
 		hctx, hcancel := context.WithTimeout(ctx, time.Second*4)
 		defer hcancel()
 
@@ -45,7 +45,7 @@ func TestEvent(t *testing.T) {
 
 	}
 	go func() {
-		event.RegisterHook(event.Start, event.NewHookContext(timeout, ctx))
+		event.RegisterHook(event.Start, event.NewHookContext(timeout, "ctx"))
 	}()
 
 	time.Sleep(1 * time.Second)
@@ -55,7 +55,8 @@ func TestEvent(t *testing.T) {
 func TestCancel(t *testing.T) {
 	wg := new(sync.WaitGroup)
 	event.TriggerEvent(event.Start)
-	cancelFunc := func(ctx context.Context) {
+	ctx, cancel := context.WithCancel(context.Background())
+	cancelFunc := func() {
 		defer wg.Done()
 		respC := make(chan int)
 		// 处理逻辑
@@ -73,10 +74,10 @@ func TestCancel(t *testing.T) {
 
 		}
 	}
-	ctx, cancel := context.WithCancel(context.Background())
+
 	wg.Add(1)
 	go func() {
-		event.RegisterHook(event.Start, event.NewHookContext(cancelFunc, ctx))
+		event.RegisterHook(event.Start, event.NewHookContext(cancelFunc, "ctx"))
 	}()
 	time.Sleep(time.Second * 2)
 	// 触发取消

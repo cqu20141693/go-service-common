@@ -1,8 +1,8 @@
 package event
 
 import (
-	"context"
-	"github.com/cqu20141693/go-service-common/logger"
+	"fmt"
+	"github.com/cqu20141693/go-service-common/logger/cclog"
 )
 
 // event
@@ -13,27 +13,29 @@ const (
 	Start
 	LocalConfigComplete
 	ConfigComplete
+	LogComplete
 	RouterRegisterComplete
 )
 
-type ConfigHook func(ctx context.Context)
+type ConfigHook func()
 
 var concurrent = Init
 
 type HookContext struct {
 	hook ConfigHook
-	Ctx  context.Context
+	name string
 }
 
-func NewHookContext(hook ConfigHook, ctx context.Context) *HookContext {
-	return &HookContext{hook: hook, Ctx: ctx}
+func NewHookContext(hook ConfigHook, name string) *HookContext {
+	return &HookContext{hook: hook, name: name}
 }
 
 var HookMap = make(map[MicroEvent][]*HookContext)
 
 func RegisterHook(e MicroEvent, hookCtx *HookContext) {
+	cclog.Debug(fmt.Sprintf("RegisterHook [%s] on event=%d", hookCtx.name, e))
 	if concurrent >= e {
-		hookCtx.hook(hookCtx.Ctx)
+		hookCtx.hook()
 	} else {
 		hooks, ok := HookMap[e]
 		if !ok {
@@ -45,17 +47,14 @@ func RegisterHook(e MicroEvent, hookCtx *HookContext) {
 }
 
 func TriggerEvent(event MicroEvent) {
+	cclog.Debug(fmt.Sprintf("trigger event=%d", event))
 	if concurrent < event {
+		concurrent = event
 		for _, hookCtx := range HookMap[event] {
-			hookCtx.hook(hookCtx.Ctx)
+			hookCtx.hook()
 		}
-		concurrent = event
 	} else {
-		for _, hookCtx := range HookMap[event-1] {
-			hookCtx.hook(hookCtx.Ctx)
-		}
-		concurrent = event
-		logger.Info(context.Background(), "current event must be less event")
+		cclog.Info("current event must be less event")
 	}
 
 }

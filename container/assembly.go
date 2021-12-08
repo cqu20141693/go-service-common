@@ -1,9 +1,8 @@
 package container
 
 import (
-	"context"
 	"encoding/json"
-	"github.com/cqu20141693/go-service-common/logger"
+	"github.com/cqu20141693/go-service-common/logger/cclog"
 	"github.com/spf13/viper"
 )
 
@@ -22,23 +21,23 @@ func AddConfigProperties(cpc <-chan ConfigProperties) {
 			ConfigContainer = append(ConfigContainer, cp)
 			marshal, err := json.Marshal(viper.GetString(cp.prefix()))
 			if err != nil {
-				logger.Info(context.Background(), "config Marshal  failed")
+				cclog.Info("config Marshal  failed")
 				return
 			}
 			err = json.Unmarshal(marshal, &cp)
 			if err != nil {
-				logger.Info(context.Background(), "config Unmarshal failed")
+				cclog.Info("config Unmarshal failed")
 				return
 			}
 		case <-stop:
-			logger.Info(context.Background(), "ConfigProperties add stop")
+			cclog.Info("ConfigProperties add stop")
 			break
 		}
 	}
 }
 
 func ConfigUpdate() {
-	logger.Info(context.Background(), "config update")
+	cclog.Info("config update")
 }
 func Stop() {
 	stop <- true
