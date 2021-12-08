@@ -1,7 +1,6 @@
 package cclog
 
 import (
-	"github.com/cqu20141693/go-service-common/global"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"io"
@@ -13,11 +12,11 @@ var logs = map[string]Writer{"console": getConsoleWriter()}
 var console Writer
 
 func getConsoleWriter() Writer {
-	stdout := newLogger(os.Stdout)
+	stdout := newLogger(os.Stdout, zapcore.InfoLevel)
 	console = NewCCLogWriter(stdout)
 	return console
 }
-func newLogger(w io.Writer) *zap.Logger {
+func newLogger(w io.Writer, level zapcore.Level) *zap.Logger {
 	eConfig := zapcore.EncoderConfig{
 		MessageKey:  "msg",
 		LevelKey:    "level",
@@ -27,7 +26,7 @@ func newLogger(w io.Writer) *zap.Logger {
 	core := zapcore.NewCore(
 		zapcore.NewConsoleEncoder(eConfig),
 		zapcore.AddSync(w),
-		global.GetLogLevel(),
+		level,
 	)
 	return zap.New(core)
 }
@@ -35,6 +34,10 @@ func newLogger(w io.Writer) *zap.Logger {
 func AddWriter(key string, writer Writer) {
 	logs[key] = writer
 }
+func AddLogger(key string, level zapcore.Level, writer io.Writer) {
+	logs[key] = NewCCLogWriter(newLogger(writer, level))
+}
+
 func DebugEntry(msg string) Entry {
 	return Entry{Level: DEBUG, Message: msg, Timestamp: time.Now()}
 }

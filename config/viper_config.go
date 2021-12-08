@@ -33,7 +33,7 @@ func ReadCommandLine() {
 	pflag.Parse()
 	// 绑定命令行
 	viper.BindPFlags(pflag.CommandLine)
-	cclog.Info(fmt.Sprintf("profile active %s", GetString("cc.profiles.active")))
+	cclog.Debug(fmt.Sprintf("profile active %s", GetString("cc.profiles.active")))
 }
 func ReadLocalConfig() {
 	// 读取本地配置

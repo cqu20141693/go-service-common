@@ -1,6 +1,10 @@
 package global
 
-import "go.uber.org/zap/zapcore"
+import (
+	"github.com/cqu20141693/go-service-common/logger/cclog"
+	"go.uber.org/zap/zapcore"
+	"os"
+)
 
 var defaultLogLevel = zapcore.InfoLevel
 
@@ -9,4 +13,5 @@ func GetLogLevel() zapcore.Level {
 }
 func SetLogLevel(level zapcore.Level) {
 	defaultLogLevel = level
+	cclog.AddLogger("console", zapcore.DebugLevel, os.Stdout)
 }
