@@ -2,7 +2,6 @@ package config
 
 import (
 	"errors"
-	"fmt"
 	"github.com/cqu20141693/go-service-common/event"
 	"github.com/cqu20141693/go-service-common/logger/cclog"
 	"github.com/spf13/pflag"
@@ -10,7 +9,6 @@ import (
 )
 
 func Init() {
-	pflag.String("cc.profiles.active", "", "config env variable")
 	event.RegisterHook(event.Start, event.NewHookContext(readConfig, "initConfig"))
 }
 
@@ -26,14 +24,31 @@ func readConfig() {
 }
 
 func ReadLocalProfile() {
+	active := viper.GetString("cc.profiles.active")
+	name := "bootstrap"
+	if active != "" {
+		fileName := name + "-" + active + ".yml"
+		profileViper := viper.GetViper()
+		profileViper.SetConfigName(fileName)
+		profileViper.SetConfigType("yaml")
+		profileViper.AddConfigPath("./resource")
+		profileViper.AddConfigPath("/etc/resource")
+		if err := profileViper.MergeInConfig(); err != nil {
+			if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+				cclog.Debug("Config file not found; ignore error if desired")
+			} else {
+				cclog.Info("Config file was found but another error was produced")
+			}
+		}
 
+	}
 }
 
 func ReadCommandLine() {
+	pflag.String("cc.profiles.active", "", "config env variable")
 	pflag.Parse()
 	// 绑定命令行
-	viper.BindPFlags(pflag.CommandLine)
-	cclog.Debug(fmt.Sprintf("profile active %s", GetString("cc.profiles.active")))
+	_ = viper.BindPFlags(pflag.CommandLine)
 }
 func ReadLocalConfig() {
 	// 读取本地配置
