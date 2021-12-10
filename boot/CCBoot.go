@@ -3,9 +3,7 @@ package boot
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/cqu20141693/go-service-common/config"
 	"github.com/cqu20141693/go-service-common/event"
-	"github.com/cqu20141693/go-service-common/logger"
 	"github.com/cqu20141693/go-service-common/logger/cclog"
 	"github.com/cqu20141693/go-service-common/web"
 	signalutil "go-micro.dev/v4/util/signal"
@@ -13,10 +11,6 @@ import (
 	"os/signal"
 )
 
-func init() {
-	logger.Init()
-	config.Init()
-}
 func Boot(args []string) {
 
 	event.TriggerEvent(event.Start)

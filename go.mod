@@ -11,6 +11,7 @@ require (
 	github.com/go-redis/redis/v8 v8.11.4
 	github.com/lestrrat/go-file-rotatelogs v0.0.0-20180223000712-d3151e2a480f
 	github.com/nacos-group/nacos-sdk-go v1.0.9
+	github.com/nacos-group/nacos-sdk-go/v2 v2.0.0-Beta.1
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.9.0
 	github.com/stretchr/testify v1.7.0
@@ -63,7 +64,6 @@ require (
 	github.com/mitchellh/mapstructure v1.4.2 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect
-	github.com/nacos-group/nacos-sdk-go/v2 v2.0.0-Beta.1 // indirect
 	github.com/nxadm/tail v1.4.8 // indirect
 	github.com/oxtoacart/bpool v0.0.0-20190530202638-03653db5a59c // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect

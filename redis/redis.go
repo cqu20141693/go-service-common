@@ -19,7 +19,7 @@ func init() {
 func initRedisDB() {
 
 	sub := config.Sub("cc.redis")
-	addr := config.GetString("addr")
+	addr := sub.GetString("addr")
 	if addr == "" {
 		sentinelNodes := sub.GetStringSlice("sentinel.nodes")
 		if sentinelNodes == nil || len(sentinelNodes) == 0 {
