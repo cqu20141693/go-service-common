@@ -1,7 +1,7 @@
 package container
 
 import (
-	"github.com/cqu20141693/go-service-common/logger/cclog"
+	"github.com/cqu20141693/go-service-common/v2/logger/cclog"
 	"syscall"
 )
 

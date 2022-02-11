@@ -1,8 +1,10 @@
-module github.com/cqu20141693/go-service-common
+module github.com/cqu20141693/go-service-common/v2
 
 go 1.17
 
 require (
+	github.com/asim/go-micro/plugins/config/encoder/yaml/v4 v4.0.0-20211207093048-a40f6e8fae19
+	github.com/asim/go-micro/plugins/config/source/nacos/v4 v4.0.0-20211207093048-a40f6e8fae19
 	github.com/asim/go-micro/plugins/client/http/v4 v4.0.0-20211124174154-b25d744f5c51
 	github.com/asim/go-micro/plugins/registry/nacos/v4 v4.0.0-20211207093048-a40f6e8fae19
 	github.com/asim/go-micro/plugins/server/http/v4 v4.0.0-20211124174154-b25d744f5c51

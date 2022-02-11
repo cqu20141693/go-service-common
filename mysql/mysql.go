@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/cqu20141693/go-service-common/config"
+	"github.com/cqu20141693/go-service-common/v2/config"
 	"log"
 	"time"
 
-	"github.com/cqu20141693/go-service-common/event"
+	"github.com/cqu20141693/go-service-common/v2/event"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/plugin/dbresolver"

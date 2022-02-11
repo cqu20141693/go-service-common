@@ -3,7 +3,7 @@ package event_test
 import (
 	"context"
 	"fmt"
-	"github.com/cqu20141693/go-service-common/event"
+	"github.com/cqu20141693/go-service-common/v2/event"
 	"sync"
 	"testing"
 	"time"

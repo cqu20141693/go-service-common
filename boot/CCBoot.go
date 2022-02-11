@@ -3,9 +3,9 @@ package boot
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/cqu20141693/go-service-common/event"
-	"github.com/cqu20141693/go-service-common/logger/cclog"
-	"github.com/cqu20141693/go-service-common/web"
+	"github.com/cqu20141693/go-service-common/v2/event"
+	"github.com/cqu20141693/go-service-common/v2/logger/cclog"
+	"github.com/cqu20141693/go-service-common/v2/web"
 )
 
 func Boot(args []string) {

@@ -1,9 +1,9 @@
 package cclog_test
 
 import (
-	ccboot "github.com/cqu20141693/go-service-common/boot"
-	"github.com/cqu20141693/go-service-common/global"
-	"github.com/cqu20141693/go-service-common/logger/cclog"
+	ccboot "github.com/cqu20141693/go-service-common/v2/boot"
+	"github.com/cqu20141693/go-service-common/v2/global"
+	"github.com/cqu20141693/go-service-common/v2/logger/cclog"
 	"go.uber.org/zap/zapcore"
 	"testing"
 )

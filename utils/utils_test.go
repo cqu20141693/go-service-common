@@ -2,7 +2,7 @@ package utils_test
 
 import (
 	"fmt"
-	"github.com/cqu20141693/go-service-common/utils"
+	"github.com/cqu20141693/go-service-common/v2/utils"
 	"testing"
 )
 

@@ -1,11 +1,11 @@
 package redis
 
 import (
-	"github.com/cqu20141693/go-service-common/config"
+	"github.com/cqu20141693/go-service-common/v2/config"
 	"log"
 	"time"
 
-	"github.com/cqu20141693/go-service-common/event"
+	"github.com/cqu20141693/go-service-common/v2/event"
 	"github.com/go-redis/redis/v8"
 )
 

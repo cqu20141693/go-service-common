@@ -1,17 +1,17 @@
 package boot
 
 import (
-	"github.com/cqu20141693/go-service-common/config"
-	"github.com/cqu20141693/go-service-common/event"
-	"github.com/cqu20141693/go-service-common/logger"
-	"github.com/cqu20141693/go-service-common/utils"
+	"github.com/cqu20141693/go-service-common/v2/config"
+	"github.com/cqu20141693/go-service-common/v2/event"
+	"github.com/cqu20141693/go-service-common/v2/logger"
+	"github.com/cqu20141693/go-service-common/v2/utils"
 	"os"
 	"os/signal"
 )
 
 func init() {
 	logger.Init()
-	config.Init()
+	config.InitV2()
 }
 func Task() {
 	event.TriggerEvent(event.Start)
